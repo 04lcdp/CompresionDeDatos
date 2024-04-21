@@ -4,9 +4,10 @@
 #comprimir y descomprimir.
 import tkinter as tk
 from tkinter import filedialog
-
+from collections import defaultdict
 import heapq
 from collections import defaultdict, Counter
+import ast
 
 class NodoHuffman:
     def __init__(self, caracter, frecuencia):
@@ -49,6 +50,7 @@ def construir_tabla_codigos(arbol_huffman):
 def comprimir(texto):
     arbol_huffman = construir_arbol_huffman(texto)
     tabla_codigos = construir_tabla_codigos(arbol_huffman)
+    dict(tabla_codigos)
     texto_codificado = ''.join(tabla_codigos[caracter] for caracter in texto)
     return texto_codificado, tabla_codigos
 
@@ -68,7 +70,7 @@ def archivocompresion():
     root.withdraw()
     ruta_archivo = filedialog.askopenfilename(
         title="Elige un archivo para comprimir",
-        filetypes=(("Archivos de texto", "*.txt"), ("Todos los archivos", "*.*"))
+        filetypes=(("Archivos de texto", ".txt"), ("Todos los archivos", ".*"))
     )
     if ruta_archivo:
         try:
@@ -83,24 +85,58 @@ def archivocompresion():
         print("No se seleccionó ningún archivo")
         return None
 
-#def Compresion(mensaje):
-#   return mensaje
+def archivodescompresion1():
+    root = tk.Tk()
+    root.withdraw()
+    ruta_archivo = filedialog.askopenfilename(
+        title="Elige un archivo para comprimir",
+        filetypes=(("Archivos de texto", ".txt"), ("Todos los archivos", ".*"))
+    )
+    if ruta_archivo:
+        try:
+            with open(ruta_archivo, 'r', encoding='utf-8') as archivo:
+                contenido = archivo.read()
+                print(contenido)
+            return contenido
+        except Exception as e:
+            print(f"Error al leer el archivo: {e}")
+            return None
+    else:
+        print("No se seleccionó ningún archivo")
+        return None
+    
+def archivodescompresion2():
+    root = tk.Tk()
+    root.withdraw()
+    ruta_archivo = filedialog.askopenfilename(
+        title="Elige un archivo para comprimir",
+        filetypes=(("Archivos de texto", ".txt"), ("Todos los archivos", ".*"))
+    )
+    if ruta_archivo:
+        try:
+            with open(ruta_archivo, 'r') as archivo:
+                contenido = archivo.read()
+                print(contenido)
+            tabla_codigos = ast.literal_eval(contenido)
+            return tabla_codigos
+        except Exception as e:
+            print(f"Error al leer el archivo: {e}")
+            return None
+    else:
+        print("No se seleccionó ningún archivo")
+        return None
 
 opcion = input ("COMPRESION DE DATOS\n1. Compresion de Datos\n2.Descompresion de Datos\n\nElige tu opcion -> ")
 if opcion == '1':
     contenido = archivocompresion()
     texto_codificado, tabla_codigos = comprimir(contenido)
-    print("Texto codificado:", texto_codificado, tabla_codigos)
+    print("Texto codificado:", texto_codificado)
+    diccionario = dict(tabla_codigos)
+    print("Tabla de códigos:", diccionario)
+if opcion == '2':
+    texto_codificado = archivodescompresion1()
+    tabla_codigos = archivodescompresion2()
+    #dict(tabla_codigos)
     texto_decodificado = descomprimir(texto_codificado, tabla_codigos)
     print("Texto decodificado:", texto_decodificado)
-#if contenido_archivo:
-    #print("Contenido del archivo:")
-    #print(contenido_archivo)
-#else:
-    #print("No se pudo leer ningún contenido.")
-
-#01111100101010001111100
-
-
-#mensaje = "hola"
-#print(mensaje)
+#Hacer 2 selecciones (una para el texto binario y otra para seleccionar la tabla de codigos)
